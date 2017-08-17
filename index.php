@@ -5,6 +5,6 @@
 	
 	if (isset($_COOKIE['LoginSession'])){
 		} else {
-		$page = new Page("Home");
+		$page = new HomePage;
 		}
 ?>
