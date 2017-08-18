@@ -5,6 +5,7 @@
 	class HomePage extends Page{
 		function __construct(){
 			parent::__construct("Home");
+			LoggedOutNavbar();
 			return;
 			}
 			

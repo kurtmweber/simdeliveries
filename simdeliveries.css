@@ -1,0 +1,27 @@
+nav {
+	background-color: #00ffff;
+	font-family: courier;
+	font-size: x-large;
+	text-align: center;
+}
+
+h1 {
+	text-align: center;
+}
+
+.navbar-link {
+	font-weight: bolder;
+	color: brown;
+}
+
+.navbar-link:link{
+	text-decoration: none;
+	color: brown;
+	font-weight: bolder;
+}
+
+.navbar-link:hover{
+	text-decoration: none;
+	color: red;
+	font-weight: bolder;
+}
