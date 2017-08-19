@@ -9,6 +9,7 @@
 			if ($conn->connect_errno){
 				printf("mySQL error: %s\n", $conn->connect_error);
 				exit();
+				}
 			}
 			
 		return $conn;
