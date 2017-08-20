@@ -33,15 +33,36 @@
 				}
 			}
 			
+		function TestUsernameExists($userName){
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT * FROM users WHERE userName = ?")){
+				$stmt->bind_param("s", $userName);
+				$stmt->execute();
+				$stmt->store_result();
+				if ($stmt->num_rows > 0){
+					return true;
+					}
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+			}
+			
 		function CreateNewUser($userName, $password, $ip, $email, $dateOfBirth){
 			$conn = GetDatabaseConn();
 			
 			$stmt = $conn->stmt_init();
-			if ($stmt->prepare("INSERT INTO users VALUES(NULL, ?, ?, FALSE, NULL, NULL, NULL, ?, ?, FALSE)")){
+			if ($stmt->prepare("INSERT INTO users VALUES(NULL, ?, ?, FALSE, NULL, NULL, NULL, ?, ?, FALSE, FALSE)")){
 				$stmt->bind_param("ssss", $userName, password_hash($password, PASSWORD_DEFAULT), $email, $dateOfBirth);
 				$stmt->execute();
+				if ($stmt->errno == SQL_ERROR_DUP_ENTRY){
+					if ($this->TestUsernameExists($userName)){
+						throw new exception("username exists", E_USERNAME_EXISTS);
+						}
+					}
 				} else {
-				throw new Exception("prepared statement failed", EXCEPTION_PREPARED_STMT_FAILED);
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
 				}
 				
 			$this->userId = $stmt->insert_id;
@@ -51,18 +72,31 @@
 				$stmt->bind_param("is", $this->userId, $ip);
 				$stmt->execute();
 				} else {
-				throw new Exception("prepared statement failed", EXCEPTION_PREPARED_STMT_FAILED);
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
 				}
 				
 			$loginId = $stmt->insert_id;
 			
-			$stmt = $conn->stmt-insert_id;
+			$stmt = $conn->stmt_init();
 			if ($stmt->prepare("UPDATE users SET registration=?, lastLogin=?")){
 				$stmt->bind_param("ii", $loginId, $loginId);
 				$stmt->execute();
 				} else {
-				throw new Exception("prepared statement failed", EXCEPTION_PREPARED_STMT_FAILED);
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
 				}
+				
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("INSERT INTO emailVerification VALUES(NULL, ?, ?)")){
+				$random = openssl_random_pseudo_bytes(16);
+				$verify = hash("md5", $random, true);
+				$verify = bin2hex($verify);
+				$stmt->bind_param("is", $loginId, $verify);
+				$stmt->execute();
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+				
+			mail($email, "SimDeliveries Email Verification", $verify, "From: kmw@outwardhosting.com");
 				
 			return;
 			}

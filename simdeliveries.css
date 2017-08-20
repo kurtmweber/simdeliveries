@@ -23,6 +23,10 @@ label.invalid {
 	color: red;
 }
 
+p.invalid {
+	color: red;
+}
+
 select.invalid {
 	background-color: #ffaaaa;
 }

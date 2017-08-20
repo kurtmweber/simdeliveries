@@ -14,7 +14,21 @@
 			$this->Begin();
 			}
 			
-		function Begin(){
+		function Begin(){			
+			if ($this->user === false){
+				LoggedOutNavbar();
+				if (isset($_POST['SubmitRegistration'])){
+					$this->ProcessRegistration();
+					} else {
+					@$this->RegistrationForm();
+					}
+				} else {
+				}
+				
+			return;
+			}
+			
+		function ProcessRegistration(){
 			$userName = $_POST['userName'];
 			$email = $_POST['email'];
 			$password = $_POST['password'];
@@ -22,20 +36,114 @@
 			$birthDate = $_POST['birthDate'];
 			$birthYear = $_POST['birthYear'];
 			
-			if ($this->user === false){
-				LoggedOutNavbar();
-				if (isset($_POST['SubmitRegistration'])){
-					} else {
-					$this->RegistrationForm();
-					}
-				} else {
+			if (preg_match("/[a-zA-Z0-9_-]/", $userName) === 0){
+?>
+		<P CLASS="invalid">User name must consist of letters, numbers, underscore, or hyphen.</P>
+<?php
+				$invalids['userName'] = true;
 				}
+				
+			if (preg_match("/@/", $email) === 0){
+?>
+		<P CLASS="invalid">Invalid e-mail address format.</P>
+<?php
+				$invalids['email'] = true;
+				}
+				
+			if ((strlen($password) < 8) || ($password == $userName) || ($password == $email)){
+?>
+		<P CLASS="invalid">Password must be at least eight characters and distinct from username or email address.</P>
+<?php
+				$invalids['password'] = true;
+				}
+				
+			$birthYear = trim($birthYear);
+			$birthMonth = trim($birthMonth);
+			$birthDate = trim($birthDate);
+			
+			if (!$this->ValidateDate($birthYear, $birthMonth, $birthDate)){
+?>
+		<P CLASS="invalid">Invalid birth date.</P>
+<?php
+				$invalids['birthDay'] = true;
+				}
+				
+			if (isset($invalids)){
+				$this->RegistrationForm($invalids);
+				return;
+				}
+				
+			$dob = $birthYear . "-" . $birthMonth . "-" . $birthDate;
+				
+			try {
+				$user = new User($userName, $password, $_SERVER['REMOTE_ADDR'], $email, $dob);
+				} catch (Exception $e){
+				if ($e->getCode() == E_PREPARED_STMT_UNRECOV){
+					printf("Unrecoverable error, exiting.");
+					exit();
+					}
+				if ($e->getCode() == E_USERNAME_EXISTS){
+?>
+		<P CLASS="invalid">Error: That username is already in use.</P>
+<?php
+					}
+				if ($e->getCode() == E_EMAIL_EXISTS){
+?>
+		<P CLASS="invalid">Error: That e-mail address is already in use.</P>
+<?php
+					}
+				@$this->RegistrationForm();
+				return;
+				}
+?>
+		<P>Registration succeeded.  You should receive an e-mail containing a verification code.  Follow the instructions contained in that e-mail, and then wait for an admin to approve your registration (usually no more than 24 hours); you will be notified when this is done.</P>
+<?php
 			}
 
 		function RegistrationFormClass($value){
 			if (isset($value)){
 				printf("CLASS=\"invalid\" ");
 				}
+			}
+			
+		function ValidateDate($birthYear, $birthMonth, $birthDate){			
+			if (!is_int($birthYear) && !ctype_digit($birthYear)){
+				return false;
+				}
+				
+			if (!is_int($birthMonth) && !ctype_digit($birthMonth)){
+				return false;
+				}
+				
+			if (!is_int($birthDate) && !ctype_digit($birthDate)){
+				return false;
+				}
+				
+			if ($birthYear < 1900){
+				return false;
+				}
+			
+			if ($birthYear > (date("Y") - 18)){
+				return false;
+				}
+				
+			if ($birthMonth < 1){
+				return false;
+				}
+				
+			if ($birthMonth > 12){
+				return false;
+				}
+				
+			if ($birthDate < 1){
+				return false;
+				}
+				
+			if ($birthDate > 31){
+				return false;
+				}
+				
+			return checkdate($birthMonth, $birthDate, $birthYear);
 			}
 		
 		function RegistrationForm($invalids){
@@ -44,17 +152,17 @@
 		<P>Fill out and submit to register.  All fields are required.  After registration, you will receive an e-mail with a verification code.  Follow the instructions in the e-mail, and then it will be up to another 24-48 hours before your registration is approved by an administrator.</P>
 		<FORM ACTION="index.php?register" METHOD="POST">
 			<INPUT TYPE="HIDDEN" NAME="SubmitRegistration" VALUE="TRUE">
-			<LABEL <?php $this->RegistrationFormClass($invalids['userName']) ?>FOR="userName">Desired username:</LABEL>
-			<INPUT <?php $this->RegistrationFormClass($invalids['userName']) ?>TYPE="TEXT" NAME="userName">
+			<LABEL <?php $this->RegistrationFormClass(@$invalids['userName']) ?>FOR="userName">Desired username:</LABEL>
+			<INPUT <?php $this->RegistrationFormClass(@$invalids['userName']) ?>TYPE="TEXT" NAME="userName">
 			<BR>
-			<LABEL <?php $this->RegistrationFormClass($invalids['email']) ?>FOR="email">E-mail address:</LABEL>
-			<INPUT <?php $this->RegistrationFormClass($invalids['email']) ?>TYPE="TEXT" NAME="email">
+			<LABEL <?php $this->RegistrationFormClass(@$invalids['email']) ?>FOR="email">E-mail address:</LABEL>
+			<INPUT <?php $this->RegistrationFormClass(@$invalids['email']) ?>TYPE="TEXT" NAME="email">
 			<BR>
-			<LABEL <?php $this->RegistrationFormClass($invalids['password']) ?>FOR="password">Password:</LABEL>
-			<INPUT <?php $this->RegistrationFormClass($invalids['password']) ?>TYPE="PASSWORD" NAME="password">
+			<LABEL <?php $this->RegistrationFormClass(@$invalids['password']) ?>FOR="password">Password:</LABEL>
+			<INPUT <?php $this->RegistrationFormClass(@$invalids['password']) ?>TYPE="PASSWORD" NAME="password">
 			<BR>
-			<LABEL <?php $this->RegistrationFormClass($invalids['birthDay']) ?>FOR="birthYear">Date of Birth:</LABEL>
-			<SELECT <?php $this->RegistrationFormClass($invalids['birthDay']) ?>NAME="birthYear">
+			<LABEL <?php $this->RegistrationFormClass(@$invalids['birthDay']) ?>FOR="birthYear">Date of Birth:</LABEL>
+			<SELECT <?php $this->RegistrationFormClass(@$invalids['birthDay']) ?>NAME="birthYear">
 				<OPTION>Year
 				<OPTION VALUE="1999">1999
 				<OPTION VALUE="1998">1998
@@ -157,7 +265,7 @@
 				<OPTION VALUE="1901">1901
 				<OPTION VALUE="1900">1900
 			</SELECT>
-			<SELECT <?php $this->RegistrationFormClass($invalids['birthDay']) ?>NAME="birthMonth">
+			<SELECT <?php $this->RegistrationFormClass(@$invalids['birthDay']) ?>NAME="birthMonth">
 				<OPTION>Month
 				<OPTION VALUE="01">January
 				<OPTION VALUE="02">February
@@ -172,7 +280,7 @@
 				<OPTION VALUE="11">November
 				<OPTION VALUE="12">December
 			</SELECT>
-			<SELECT <?php $this->RegistrationFormClass($invalids['birthDay']) ?>NAME="birthDate">
+			<SELECT <?php $this->RegistrationFormClass(@$invalids['birthDay']) ?>NAME="birthDate">
 				<OPTION>Day
 				<OPTION VALUE="01">1
 				<OPTION VALUE="02">2
@@ -212,6 +320,7 @@
 			<INPUT TYPE="RESET" VALUE="Reset">
 		</FORM>
 <?php
+			return;
 			}
 		
 		function __destruct(){
