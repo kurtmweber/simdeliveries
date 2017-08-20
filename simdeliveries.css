@@ -9,6 +9,24 @@ h1 {
 	text-align: center;
 }
 
+input.invalid {
+	background-color: #ffaaaa;
+}
+
+label {
+	display: inline-block;
+	width: 20ch;
+	text-align: right;
+}
+
+label.invalid {
+	color: red;
+}
+
+select.invalid {
+	background-color: #ffaaaa;
+}
+
 .navbar-link {
 	font-weight: bolder;
 	color: brown;
