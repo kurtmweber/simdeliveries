@@ -16,7 +16,7 @@
 			
 		function Begin(){			
 			if ($this->user === false){
-				LoggedOutNavbar();
+				$this->LoggedOutNavbar();
 				if (isset($_POST['SubmitRegistration'])){
 					$this->ProcessRegistration();
 					} else {

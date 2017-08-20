@@ -1,6 +1,5 @@
 <?php
 	require_once("Config.inc.php");
-	require_once("NavBar.inc.php");
 	
 	function PageTop($siteTitle){
 ?>

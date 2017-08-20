@@ -26,10 +26,36 @@
 				$arg = func_get_arg(0);
 				if (is_string($arg)){
 					$this->userName = $arg;
+					$this->userId = $this->GetUserId();
 					}
 				if (is_int($arg)){
 					$this->userId = $arg;
 					}
+				}
+			}
+			
+		function GetUserId(){
+			if (func_num_args() == 0){
+				$searchUser = $this->userName;
+				} else {
+				$searchUser = func_get_arg(0);
+				}
+				printf("%s", $searchUser);
+				
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT id FROM users WHERE userName = ?")){
+				$stmt->bind_param("s", $searchUser);
+				$stmt->execute();
+				$stmt->bind_result($resultId);
+				if (!$stmt->fetch()){
+					throw new Exception("invalid user", E_USER_NO_EXIST);
+					}
+				$this->userId = $resultId;
+				return $resultId;
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
 				}
 			}
 			
