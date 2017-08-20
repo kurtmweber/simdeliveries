@@ -49,6 +49,22 @@
 				}
 			}
 			
+		function TestEmailExists($email){
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT * FROM users WHERE eMail = ?")){
+				$stmt->bind_param("s", $email);
+				$stmt->execute();
+				$stmt->store_result();
+				if ($stmt->num_rows > 0){
+					return true;
+					}
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+			}
+			
 		function CreateNewUser($userName, $password, $ip, $email, $dateOfBirth){
 			$conn = GetDatabaseConn();
 			
@@ -59,6 +75,9 @@
 				if ($stmt->errno == SQL_ERROR_DUP_ENTRY){
 					if ($this->TestUsernameExists($userName)){
 						throw new exception("username exists", E_USERNAME_EXISTS);
+						}
+					if ($this->TestEmailExists($email)){
+						throw new exception("email exists", E_EMAIL_EXISTS);
 						}
 					}
 				} else {
@@ -90,7 +109,7 @@
 				$random = openssl_random_pseudo_bytes(16);
 				$verify = hash("md5", $random, true);
 				$verify = bin2hex($verify);
-				$stmt->bind_param("is", $loginId, $verify);
+				$stmt->bind_param("is", $this->userId, $verify);
 				$stmt->execute();
 				} else {
 				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
