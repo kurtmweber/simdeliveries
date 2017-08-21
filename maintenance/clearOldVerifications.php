@@ -28,7 +28,7 @@
 		$loginStmt->store_result();
 		if ($loginStmt->num_rows != 0){
 			$delStmt = $conn->stmt_init();
-			$delStmt->prepare("DELETE FROM users WHERE id = ?");
+			$delStmt->prepare("DELETE FROM users WHERE id = ? AND verified=false");
 			$delStmt->bind_param("i", $id);
 			$delStmt->execute();
 			
