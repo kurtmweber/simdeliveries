@@ -44,7 +44,15 @@
 			<A HREF="index.php" CLASS="navbar-link">[home]</A> | <A HREF="index.php?news" CLASS="navbar-link">[news]</A> | <A HREF="index.php?register" CLASS="navbar-link">[register]</A> | <A HREF="index.php?login" CLASS="navbar-link">[log in]</A>
 		</NAV>
 <?php
-		}
+			}
+		
+		function LoggedInNavbar(){
+?>
+		<NAV>
+			<A HREF="index.php?user" CLASS="navbar-link">[home]</A> | <A HREF="index.php?news" CLASS="navbar-link">[news] | <A HREF="index.php?aircraft" CLASS="navbar-link">[aircraft]</A> | <A HREF="index.php?airports" CLASS="navbar-link">[airports]</A> | <A HREF="index.php?finance" CLASS="navbar-link">[finance]</A> | <A HREF="index.php?communications" CLASS="navbar-link">[comms]</A> | <A HREF="index.php?profile" CLASS="navbar-link">[profile]</A> | <A HREF="index.php?logout" CLASS="navbar-link">[log out]</A>
+		</NAV>
+<?php
+			}
 			
 		function __destruct(){
 			PageBottom();

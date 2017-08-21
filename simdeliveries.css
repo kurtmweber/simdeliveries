@@ -1,7 +1,7 @@
 nav {
-	background-color: #00ffff;
+	background-color: #bbbbbb;
 	font-family: courier;
-	font-size: x-large;
+	font-size: large;
 	text-align: center;
 }
 
@@ -16,6 +16,12 @@ input.invalid {
 label {
 	display: inline-block;
 	width: 20ch;
+	text-align: right;
+}
+
+label.login {
+	display: inline-block;
+	width: 9ch;
 	text-align: right;
 }
 

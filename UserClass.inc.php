@@ -34,6 +34,108 @@
 				}
 			}
 			
+		function Authenticate($password){
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT passwordHash FROM users WHERE id = ?")){
+				$stmt->bind_param("i", $this->userId);
+				$stmt->execute();
+				$stmt->bind_result($passwordHash);
+				if (!$stmt->fetch()){
+					throw new Exception("invalid user", E_USER_NO_EXIST);
+					}
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+			
+			if (password_verify($password, $passwordHash)){
+				return true;
+				} else {
+				return false;
+				}
+			}
+			
+		function Login($ip){
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("INSERT INTO logins VALUES(NULL, ?, ?, NULL)")){
+				$stmt->bind_param("is", $this->userId, $ip);
+				$stmt->execute();
+				$insertId = $stmt->insert_id;
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+				
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("UPDATE users SET lastLogin = ? WHERE id = ?")){
+				$stmt->bind_param("ii", $insertId, $this->userId);
+				$stmt->execute();
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+				
+			return $insertId;
+			}
+			
+		function NewSession($loginId){
+			$conn = GetDatabaseConn();
+			
+			$sessionCode = bin2hex(hash("md5", openssl_random_pseudo_bytes(32), true));
+			
+			$sessionSecret = bin2hex(hash("md5", $sessionCode . $loginId . $this->GetUserName(), true));
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("DELETE FROM sessions WHERE user = ?")){
+				$stmt->bind_param("i", $this->GetUserId());
+				$stmt->execute();
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("INSERT INTO sessions VALUES(NULL, ?, ?, ?, ?)")){
+				$stmt->bind_param("issi", $this->GetUserId(), $sessionSecret, $sessionCode, $loginId);
+				$stmt->execute();
+				if ($stmt->errno){
+					printf("%s", $stmt->error);
+					}
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+				
+			return $sessionCode;
+			}
+			
+		function GetUserName(){
+			if ($this->userName){
+				return $this->userName;
+				}
+				
+			if (func_num_args() == 0){
+				$searchUser = $this->userId;
+				} else {
+				$searchUser = func_get_arg(0);
+				}
+				
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT userName FROM users WHERE userName = ?")){
+				$stmt->bind_param("s", $searchUser);
+				$stmt->execute();
+				$stmt->bind_result($resultName);
+				if (!$stmt->fetch()){
+					throw new Exception("invalid user", E_USER_NO_EXIST);
+					}
+				$this->userName = $resultName;
+				return $resultName;
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+			}
+			
 		function GetUserId(){
 			if ($this->userId){
 				return $this->userId;

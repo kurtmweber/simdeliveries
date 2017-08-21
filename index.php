@@ -7,6 +7,8 @@
 		$page = new RegisterPage;
 		} elseif (isset($_GET['verify'])) {
 		$page = new VerifyPage;
+		} elseif (isset($_GET['login'])){
+		$page = new LoginPage;
 		} else {
 		$page = new HomePage;
 		}

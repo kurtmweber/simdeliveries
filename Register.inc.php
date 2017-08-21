@@ -2,6 +2,7 @@
 	require_once("Config.inc.php");
 	require_once("SecurePage.inc.php");
 	require_once("UserClass.inc.php");
+	require_once("Database.inc.php");
 	
 	class RegisterPage extends SecurePage{
 		private $user;
@@ -9,7 +10,7 @@
 		function __construct(){
 			parent::__construct("Register");
 			
-			$this->user = parent::GetUser();
+			$this->user = $this->GetUser();
 				
 			$this->Begin();
 			}

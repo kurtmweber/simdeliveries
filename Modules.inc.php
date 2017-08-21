@@ -7,4 +7,6 @@
 	require_once("Register.inc.php");
 	
 	require_once("Verify.inc.php");
+	
+	require_once("Login.inc.php");
 ?>
