@@ -5,11 +5,29 @@
 	
 	class Page{
 		private $PageTitle;
+		private $TabLevel;
 		
 		function __construct($PageTitle){
 			$this->PageTitle = $PageTitle;
 			
 			PageTop($this->PageTitle);
+			
+			$this->TabLevel = 2;
+			}
+			
+		function TabbedHtmlOut($html){
+			for ($i = 0; $i < $this->TabLevel; $i++){
+				printf("\t");
+				}
+				
+			printf("%s\n", $html);
+			
+			return;
+			}
+			
+		function UnrecoverableError(){
+			$this->TabbedHtmlOut("<P CLASS=\"invalid\">Unrecoverable error, exiting</P>");
+			exit();
 			}
 			
 		function SanitizeInputForDisplay($input){

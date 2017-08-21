@@ -35,12 +35,15 @@
 			}
 			
 		function GetUserId(){
+			if ($this->userId){
+				return $this->userId;
+				}
+				
 			if (func_num_args() == 0){
 				$searchUser = $this->userName;
 				} else {
 				$searchUser = func_get_arg(0);
 				}
-				printf("%s", $searchUser);
 				
 			$conn = GetDatabaseConn();
 			
