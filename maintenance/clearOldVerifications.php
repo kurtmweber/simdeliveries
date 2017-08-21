@@ -20,7 +20,8 @@
 	$stmt->store_result();
 	while ($stmt->fetch()){
 		$loginStmt = $conn->stmt_init();
-		$loginStmt->prepare("SELECT time FROM logins WHERE time < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 day)");
+		$loginStmt->prepare("SELECT user FROM logins WHERE user = ? AND time < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 day)");
+		$loginStmt->bind_param("i", $id);
 		if ($loginStmt->errno){
 			printf("%s\n", $loginStmt->error);
 			}

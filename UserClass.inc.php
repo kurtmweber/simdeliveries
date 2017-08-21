@@ -221,6 +221,9 @@
 			if ($stmt->prepare("INSERT INTO logins VALUES(NULL, ?, ?, NULL)")){
 				$stmt->bind_param("is", $this->userId, $ip);
 				$stmt->execute();
+				if ($stmt->errno){
+					printf("%s\n", $stmt->error);
+					}
 				} else {
 				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
 				}
