@@ -27,7 +27,11 @@
 				$arg = func_get_arg(0);
 				if (is_string($arg)){
 					$this->userName = $arg;
-					$this->userId = $this->GetUserId();
+					try {
+						$this->userId = $this->GetUserId();
+						} catch (Exception $e){
+						$this->userId = null;
+						}
 					}
 				if (is_int($arg)){
 					$this->userId = $arg;
@@ -82,13 +86,21 @@
 			
 		function VerifySession($sessionCode){
 			
-			$sessionSecretTest = bin2hex(hash("md5", $sessionCode . $this->GetLoginId(). $this->GetUserName(), true));
+			try {
+				$sessionSecretTest = bin2hex(hash("md5", $sessionCode . $this->GetLoginId(). $this->GetUserName(), true));
+				} catch (Exception $e){
+				return false;
+				}
 			
 			$conn = GetDatabaseConn();
 			
 			$stmt = $conn->stmt_init();
 			if ($stmt->prepare("SELECT sessionSecret FROM sessions WHERE associatedLogin = ? ORDER BY sessionId DESC LIMIT 1")){
-				$stmt->bind_param("i", $this->GetLoginId());
+				try {
+					$stmt->bind_param("i", $this->GetLoginId());
+					} catch (Exception $e){
+					return false;
+					}
 				$stmt->execute();
 				$stmt->bind_result($sessionSecret);
 				$stmt->fetch();
@@ -112,7 +124,12 @@
 			
 			$stmt = $conn->stmt_init();
 			if ($stmt->prepare("SELECT loginId FROM logins WHERE user = ? ORDER BY time DESC LIMIT 1")){
-				$stmt->bind_param("i", $this->GetUserId());
+				try {
+					$stmt->bind_param("i", $this->GetUserId());
+					} catch (Exception $e){
+					return null;
+					}
+					
 				$stmt->execute();
 				$stmt->bind_result($loginId);
 				$stmt->fetch();

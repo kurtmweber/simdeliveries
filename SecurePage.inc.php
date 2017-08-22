@@ -27,6 +27,13 @@
 					return $user;
 					}
 				} else {
+				if (!isset($_COOKIE[SITENAME . "User"])){
+					return false;
+					}
+					
+				if (!isset($_COOKIE[SITENAME . "Session"])){
+					return false;
+					}
 				$userName = $_COOKIE[SITENAME . "User"];
 				$sessionCode = $_COOKIE[SITENAME . "Session"];
 				
