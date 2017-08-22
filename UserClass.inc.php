@@ -9,6 +9,7 @@
 		private $userId = false;
 		private $dateOfBirth = false;
 		private $timeZone = false;
+		private $loginId = false;
 		
 		private $modified = false;
 		
@@ -77,6 +78,49 @@
 				}
 				
 			return $insertId;
+			}
+			
+		function VerifySession($sessionCode){
+			
+			$sessionSecretTest = bin2hex(hash("md5", $sessionCode . $this->GetLoginId(). $this->GetUserName(), true));
+			
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT sessionSecret FROM sessions WHERE associatedLogin = ? ORDER BY sessionId DESC LIMIT 1")){
+				$stmt->bind_param("i", $this->GetLoginId());
+				$stmt->execute();
+				$stmt->bind_result($sessionSecret);
+				$stmt->fetch();
+				} else {
+				throw new exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+				
+			if ($sessionSecretTest == $sessionSecret){
+				return true;
+				} else {
+				return false;
+				}
+			}
+			
+		function GetLoginId(){
+			if ($this->loginId){
+				return $this->loginId;
+				}
+				
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT loginId FROM logins WHERE user = ? ORDER BY time DESC LIMIT 1")){
+				$stmt->bind_param("i", $this->GetUserId());
+				$stmt->execute();
+				$stmt->bind_result($loginId);
+				$stmt->fetch();
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+				
+			return $loginId;
 			}
 			
 		function NewSession($loginId){

@@ -3,6 +3,8 @@
 	require_once("Page.inc.php");
 	require_once("Modules.inc.php");
 	
+	date_default_timezone_set("Etc/UTC");
+	
 	if (isset($_GET['register'])){
 		$page = new RegisterPage;
 		} elseif (isset($_GET['verify'])) {

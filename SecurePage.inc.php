@@ -17,6 +17,17 @@
 				if ($authenticated){
 					return $user;
 					}
+				} else {
+				$userName = $_COOKIE[SITENAME . "User"];
+				$sessionCode = $_COOKIE[SITENAME . "Session"];
+				
+				$user = new User($userName);
+				
+				$session = $user->VerifySession($sessionCode);
+				
+				if ($session){
+					return true;
+					}
 				}
 			return false;
 			}

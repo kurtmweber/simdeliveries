@@ -56,6 +56,7 @@
 			
 		function SendSessionCookie($sessionCode){
 			setcookie(SITENAME . "Session", $sessionCode, time() + (365*24*60*60));
+			setcookie(SITENAME . "User", $this->user->GetUserName(), time() + (365*24*60*60));
 			
 			return;
 			}

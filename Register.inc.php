@@ -24,6 +24,8 @@
 					@$this->RegistrationForm();
 					}
 				} else {
+				$this->LoggedInNavbar();
+				$this->TabbedHtmlOut("<P CLASS=\"invalid\">You cannot register while logged in.</P>");
 				}
 				
 			return;
