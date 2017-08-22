@@ -5,8 +5,6 @@
 	require_once("Database.inc.php");
 	
 	class RegisterPage extends SecurePage{
-		private $user;
-		
 		function __construct(){
 			parent::__construct("Register");
 			

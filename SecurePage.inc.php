@@ -4,8 +4,17 @@
 	require_once("UserClass.inc.php");
 	
 	class SecurePage extends Page{
+		protected $user;
+		
 		function __construct($pageTitle){
 			parent::__construct($pageTitle);
+			}
+			
+		function NotLoggedIn(){
+			$this->LoggedOutNavbar();
+			$this->TabbedHtmlOut("<P CLASS=\"invalid\">You must be logged in to access this function.</P>");
+			
+			return;
 			}
 			
 		function GetUser(){
@@ -26,7 +35,7 @@
 				$session = $user->VerifySession($sessionCode);
 				
 				if ($session){
-					return true;
+					return $user;
 					}
 				}
 			return false;

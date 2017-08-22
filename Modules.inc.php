@@ -9,4 +9,6 @@
 	require_once("Verify.inc.php");
 	
 	require_once("Login.inc.php");
+	
+	require_once("UserPage.inc.php");
 ?>

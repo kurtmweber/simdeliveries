@@ -5,8 +5,6 @@
 	require_once("UserClass.inc.php");
 	
 	class LoginPage extends SecurePage{
-		private $user;
-		
 		function __construct(){
 			ob_start();
 			parent::__construct("Login");

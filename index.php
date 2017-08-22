@@ -11,6 +11,8 @@
 		$page = new VerifyPage;
 		} elseif (isset($_GET['login'])){
 		$page = new LoginPage;
+		} elseif (isset($_GET['user'])){
+		$page = new UserPage;
 		} else {
 		$page = new HomePage;
 		}
