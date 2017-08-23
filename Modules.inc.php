@@ -11,4 +11,6 @@
 	require_once("Login.inc.php");
 	
 	require_once("UserPage.inc.php");
+	
+	require_once("Aircraft.inc.php");
 ?>

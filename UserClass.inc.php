@@ -5,7 +5,7 @@
 	class User{
 		private $userName = false;
 		private $email = false;
-		private $admin = false;
+		private $admin = null;
 		private $userId = false;
 		private $dateOfBirth = false;
 		private $timeZone = false;
@@ -61,6 +61,34 @@
 				}
 			}
 			
+		function IsAdmin(){
+			if ($this->admin !== null){
+				return $this->admin;
+				}
+				
+			$conn = GetDatabaseConn();
+			
+			$stmt = $conn->stmt_init();
+			if ($stmt->prepare("SELECT admin FROM users WHERE id = ?")){
+				$stmt->bind_param("i", $this->userId);
+				$stmt->execute();
+				$stmt->bind_result($adminVal);
+				if(!$stmt->fetch()){
+					throw new Exception("invalid user", E_USER_NO_EXIST);
+					}
+				} else {
+				throw new Exception("prepared statement failed", E_PREPARED_STMT_UNRECOV);
+				}
+				
+			if ($adminVal == "1"){
+				$this->admin = true;
+				} else {
+				$this->admin = false;
+				}
+			
+			return $this->admin;
+			}
+		
 		function Login($ip){
 			$conn = GetDatabaseConn();
 			

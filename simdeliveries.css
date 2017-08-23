@@ -1,8 +1,12 @@
 nav {
 	background-color: #bbbbbb;
 	font-family: courier;
-	font-size: large;
+	/*font-size: large;*/
 	text-align: center;
+}
+
+nav.subnav {
+	background-color: #dddddd;
 }
 
 h1 {

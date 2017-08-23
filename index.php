@@ -13,6 +13,8 @@
 		$page = new LoginPage;
 		} elseif (isset($_GET['user'])){
 		$page = new UserPage;
+		} elseif (isset($_GET['aircraft'])){
+		$page = new Aircraft;
 		} else {
 		$page = new HomePage;
 		}
