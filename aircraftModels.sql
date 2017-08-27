@@ -35,6 +35,7 @@ CREATE TABLE `aircraftModels` (
   `fuelCapacity` int(11) NOT NULL,
   `flightRange` int(11) NOT NULL,
   `basePrice` decimal(20,2) NOT NULL,
+  `depreciationSlope` double NOT NULL COMMENT 'in dollars per hour',
   `numSeats` int(11) NOT NULL,
   `cargoCapacity` int(11) NOT NULL,
   `type` enum('l','s','h') NOT NULL COMMENT 'l=land, s=sea, h=heli',
@@ -65,4 +66,4 @@ CREATE TABLE `aircraftModels` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-27 14:03:38
+-- Dump completed on 2017-08-27 14:14:21
