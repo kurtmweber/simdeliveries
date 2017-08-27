@@ -28,12 +28,13 @@ CREATE TABLE `engineModels` (
   `name` varchar(255) NOT NULL,
   `subModel` varchar(255) NOT NULL,
   `price` decimal(20,2) NOT NULL,
-  `overhaulTime` int(11) NOT NULL,
+  `overhaulTime` int(11) NOT NULL COMMENT 'in seconds',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `subModel` (`subModel`),
-  KEY `manufacturer` (`manufacturer`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `manufacturer` (`manufacturer`),
+  CONSTRAINT `engineModels_ibfk_1` FOREIGN KEY (`manufacturer`) REFERENCES `engineManufacturers` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -45,4 +46,4 @@ CREATE TABLE `engineModels` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-24 22:49:27
+-- Dump completed on 2017-08-27 12:42:05
