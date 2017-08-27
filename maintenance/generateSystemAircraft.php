@@ -11,4 +11,5 @@
 		}
 		
 	$stmt = $conn->stmt_init();
+	$stmt->prepare(
 ?>

@@ -33,6 +33,7 @@ CREATE TABLE `aircraft` (
   `hasRadios` tinyint(1) NOT NULL,
   `hasAutopilot` tinyint(1) NOT NULL,
   `hasGps` tinyint(1) NOT NULL,
+  `hasAmphibian` tinyint(1) NOT NULL,
   `totalTime` time NOT NULL,
   `timeSinceCheck` time NOT NULL,
   `timeSinceOverhaul` int(11) NOT NULL,
@@ -63,4 +64,4 @@ CREATE TABLE `aircraft` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-27 12:06:14
+-- Dump completed on 2017-08-27 14:04:10

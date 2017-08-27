@@ -31,10 +31,14 @@ CREATE TABLE `aircraftModels` (
   `numEngines` int(11) NOT NULL,
   `defaultRadios` tinyint(1) NOT NULL,
   `defaultAutopilot` tinyint(1) NOT NULL,
-  `defaultGps` int(11) NOT NULL,
+  `defaultGps` tinyint(1) NOT NULL,
   `fuelCapacity` int(11) NOT NULL,
   `flightRange` int(11) NOT NULL,
   `basePrice` decimal(20,2) NOT NULL,
+  `numSeats` int(11) NOT NULL,
+  `cargoCapacity` int(11) NOT NULL,
+  `type` enum('l','s','h') NOT NULL COMMENT 'l=land, s=sea, h=heli',
+  `amphibianAvailable` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `manufacturer` (`manufacturer`),
   KEY `name` (`name`),
@@ -46,8 +50,10 @@ CREATE TABLE `aircraftModels` (
   KEY `defaultGps` (`defaultGps`),
   KEY `basePrice` (`basePrice`),
   KEY `flightRange` (`flightRange`),
-  KEY `fuelCapacity` (`fuelCapacity`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `fuelCapacity` (`fuelCapacity`),
+  CONSTRAINT `aircraftModels_ibfk_1` FOREIGN KEY (`manufacturer`) REFERENCES `aircraftManufacturers` (`id`),
+  CONSTRAINT `aircraftModels_ibfk_2` FOREIGN KEY (`engine`) REFERENCES `engineModels` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -59,4 +65,4 @@ CREATE TABLE `aircraftModels` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-24 23:02:25
+-- Dump completed on 2017-08-27 14:03:38
