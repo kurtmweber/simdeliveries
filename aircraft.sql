@@ -34,9 +34,10 @@ CREATE TABLE `aircraft` (
   `hasAutopilot` tinyint(1) NOT NULL,
   `hasGps` tinyint(1) NOT NULL,
   `hasAmphibian` tinyint(1) NOT NULL,
-  `totalTime` time NOT NULL,
-  `timeSinceCheck` time NOT NULL,
-  `timeSinceOverhaul` int(11) NOT NULL,
+  `totalTime` bigint(20) NOT NULL COMMENT 'in seconds',
+  `timeSinceCheck` bigint(20) NOT NULL COMMENT 'in seconds',
+  `timeSinceOverhaul` bigint(20) NOT NULL COMMENT 'in seconds',
+  `numOverhauls` int(11) NOT NULL,
   `needsRepair` tinyint(1) NOT NULL,
   `homeLocId` int(11) NOT NULL,
   `rentalCost` decimal(10,2) NOT NULL,
@@ -44,6 +45,8 @@ CREATE TABLE `aircraft` (
   `curRenterId` int(11) NOT NULL,
   `rentalExpiration` time NOT NULL,
   `isAirborne` tinyint(1) NOT NULL,
+  `forSale` tinyint(1) NOT NULL DEFAULT '0',
+  `currentPrice` decimal(20,2) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `registration` (`registration`),
   UNIQUE KEY `curRenterId` (`curRenterId`),
@@ -51,7 +54,11 @@ CREATE TABLE `aircraft` (
   KEY `ownerId` (`ownerId`),
   KEY `curLocId` (`curLocId`),
   KEY `name` (`name`),
-  KEY `homeLocId` (`homeLocId`)
+  KEY `homeLocId` (`homeLocId`),
+  CONSTRAINT `aircraft_ibfk_1` FOREIGN KEY (`modelId`) REFERENCES `aircraft` (`id`),
+  CONSTRAINT `aircraft_ibfk_2` FOREIGN KEY (`ownerId`) REFERENCES `users` (`id`),
+  CONSTRAINT `aircraft_ibfk_3` FOREIGN KEY (`curLocId`) REFERENCES `airports` (`id`),
+  CONSTRAINT `aircraft_ibfk_4` FOREIGN KEY (`homeLocId`) REFERENCES `airports` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -64,4 +71,4 @@ CREATE TABLE `aircraft` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-27 14:04:10
+-- Dump completed on 2017-08-27 18:29:18
